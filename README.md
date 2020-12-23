@@ -21,9 +21,7 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## About Laravel
-
-Run 
+## Run aloware comment system
 
  - copy .env.example to .env file and add database access credentials
  - composer install
