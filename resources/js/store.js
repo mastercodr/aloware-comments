@@ -6,18 +6,16 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
 
     state: {
-        posts: [],
+        post: {},
+        comments: {},
     },
 
     mutations: {
         pushPost(state, payLoad) {
-            state.posts.unshift(payLoad);
+            state.post = payLoad;
         },
         updateComments(state, payLoad) {
-            let post = state.posts.find((post) => {
-                return payLoad.post_id === post.id;
-            });
-            post.comments = payLoad['comments'];
+            state.comments = payLoad['comments'];
         }
     }
 });

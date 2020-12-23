@@ -1,16 +1,16 @@
 <template>
     <div>
-        <div class="panel panel-default" v-for="post in posts">
+        <div class="panel panel-default">
             <div class="panel-body">
                 <p>
-                    {{ post.content }}
+                    {{ postData.content }}
                 </p>
             </div>
             <div class="panel-footer">
                 <div class="col-md-12 pt-2">
                     <div><h4>Comments</h4></div>
-                    <comment-list v-if="post.comments" :collection="post.comments"
-                                  :comments="post.comments.root"></comment-list>
+                    <comment-list v-if="postData.comments" :collection="postData.comments"
+                                  :comments="postData.comments.root"></comment-list>
                 </div>
 
                 <div class="clearfix"></div>
@@ -21,15 +21,15 @@
                     <div class="form-group row">
                         <label for="author" class="col-1 col-form-label">Name</label>
                         <div class="col-3">
-                            <input id="author" name="author" placeholder="Your name" v-model="post.author" type="text"
+                            <input id="author" name="author" placeholder="Your name" v-model="postData.author" type="text"
                                    required="required" class="form-control">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="reply" class="col-1 col-form-label">Comment</label>
                         <div class="col-11">
-                            <input id="reply" name="reply" placeholder="Your comment" type="text" v-model="post.reply"
-                                   v-on:keyup.enter="comment(post)" required="required" class="form-control">
+                            <input id="reply" name="reply" placeholder="Your comment" type="text" v-model="postData.reply"
+                                   v-on:keyup.enter="comment(postData)" required="required" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -50,32 +50,30 @@ export default {
         }
     },
     computed: {
-        posts() {
-            return this.$store.state.posts;
+        postData() {
+            return this.$store.state.post;
         }
     },
     components: {
         'comment-list': CommentList
     },
     mounted() {
-        this.getPosts();
+        this.getPost();
     },
     methods: {
-        getPosts() {
+        getPost() {
             axios.get('/api/post').then(response => {
                 if (!response.data.error) {
-                    response.data.data.forEach((post) => {
-                        this.$store.commit('pushPost', post);
-                    });
+                    this.$store.commit('pushPost', response.data.data[0]);
                 }
             });
         },
         comment(post) {
             axios.post('/api/comment', {content: post.reply, author: post.author, post_id: post.id}).then(response => {
                 if (!response.data.error) {
-                    post.reply = '';
+                    postData.reply = '';
                     let payLoad = {
-                        post_id: post.id,
+                        post_id: postData.id,
                         comments: response.data.data
                     };
                     this.$store.commit('updateComments', payLoad);
